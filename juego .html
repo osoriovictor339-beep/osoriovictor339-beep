@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Ninja Stars</title>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden;font-family:Arial,sans-serif;color:#fff;touch-action:none}
+canvas{display:block;width:100%;height:100%;background:radial-gradient(circle at 50% 100%,#3a0000,#000 70%);cursor:crosshair}
+#ui{position:fixed;top:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 16px;font-size:22px;font-weight:bold;pointer-events:none}
+#ui span{color:#ff1f1f}
+#msg{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000c;text-align:center;padding:20px}
+h1{color:#ff1f1f;font-size:44px;margin:0 0 10px;text-shadow:0 0 18px #f00}
+button{background:#ff1f1f;color:#fff;border:0;padding:14px 28px;font-size:22px;border-radius:10px;margin-top:16px;cursor:pointer}
+</style></head><body>
+<canvas id="c"></canvas>
+<div id="ui"><div>Puntos: <span id="ps">0</span></div><div>Vidas: <span id="pl">3</span></div><div>Record: <span id="pb">0</span></div></div>
+<div id="msg"><h1>NINJA STARS</h1><p>Toca o haz clic para lanzar estrellas ninja desde abajo.<br>Corta las frutas. No dejes caer ninguna. Evita las bombas.</p><button onclick="start()">JUGAR</button></div>
+<script>
+const c=document.getElementById("c"),x=c.getContext("2d");
+let W,H,fr=[],st=[],pt=[],sc=0,li=3,run=false,t=0,flash=0,best=0;
+try{best=+localStorage.getItem("nb")||0}catch(e){}
+function rs(){W=c.width=innerWidth;H=c.height=innerHeight}rs();addEventListener("resize",rs);
+const COL=[["#ff2a2a","#8a0000"],["#ff9500","#a85a00"],["#9be000","#4a7000"],["#ffe033","#a38b00"],["#c03cff","#5a007a"]];
+function upd(){ps.textContent=sc;pl.textContent=li;pb.textContent=best}
+function start(){fr=[];st=[];pt=[];sc=0;li=3;t=0;run=true;msg.style.display="none";upd()}
+function end(){run=false;best=Math.max(best,sc);try{localStorage.setItem("nb",best)}catch(e){}upd();
+msg.innerHTML="<h1>GAME OVER</h1><p>Puntos: "+sc+" | Record: "+best+"</p><button onclick='start()'>JUGAR DE NUEVO</button>";msg.style.display="flex"}
+function spawn(){const bomb=Math.random()<.15,r=Math.min(W,H)*.05+14,px=r+Math.random()*(W-2*r);
+fr.push({x:px,y:H+r,r,bomb,col:COL[Math.random()*COL.length|0],a:0,va:(Math.random()-.5)*.1,
+vx:(W/2-px)/W*3+(Math.random()-.5)*1.5,vy:-Math.sqrt(2*.25*H*(.55+Math.random()*.3))})}
+function boom(px,py,col,n,sp){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=Math.random()*sp;
+pt.push({x:px,y:py,vx:Math.cos(a)*v,vy:Math.sin(a)*v,r:2+Math.random()*4,col,life:40+Math.random()*20})}}
+function hit(f){if(f.bomb){li--;flash=12;boom(f.x,f.y,"#ff1f1f",40,9);upd();if(li<=0)end();return}
+sc++;upd();boom(f.x,f.y,f.col[0],25,7);
+for(let h=0;h<2;h++)pt.push({half:h,x:f.x,y:f.y,vx:f.vx+(h?3:-3),vy:f.vy-2,r:f.r,col:f.col,a:f.a,va:(h?.1:-.1),life:70})}
+function throwStar(e){if(!run)return;const p=e.touches?e.touches[0]:e,sx=W/2,sy=H,
+a=Math.atan2(p.clientY-sy,p.clientX-sx);st.push({x:sx,y:sy,vx:Math.cos(a)*18,vy:Math.sin(a)*18,a:0})}
+c.addEventListener("pointerdown",throwStar);
+function drawStar(s){x.save();x.translate(s.x,s.y);x.rotate(s.a);x.fillStyle="#ff1f1f";x.strokeStyle="#fff";x.lineWidth=2;
+x.beginPath();x.moveTo(0,-16);x.lineTo(5,-5);x.lineTo(16,0);x.lineTo(5,5);x.lineTo(0,16);x.lineTo(-5,5);x.lineTo(-16,0);x.lineTo(-5,-5);x.closePath();
+x.fill();x.stroke();x.fillStyle="#000";x.beginPath();x.arc(0,0,3,0,7);x.fill();x.restore()}
+function drawFruit(f){x.save();x.translate(f.x,f.y);x.rotate(f.a);
+if(f.bomb){x.fillStyle="#111";x.strokeStyle="#ff1f1f";x.lineWidth=4;x.beginPath();x.arc(0,0,f.r,0,7);x.fill();x.stroke();
+x.strokeStyle="#fff";x.beginPath();x.moveTo(0,-f.r);x.lineTo(6,-f.r-12);x.stroke();
+x.fillStyle=(Date.now()/150|0)%2?"#ff1f1f":"#ff9500";x.beginPath();x.arc(6,-f.r-12,4,0,7);x.fill()}
+else{x.fillStyle=f.col[0];x.strokeStyle=f.col[1];x.lineWidth=4;x.beginPath();x.arc(0,0,f.r,0,7);x.fill();x.stroke();
+x.fillStyle="#ffffff55";x.beginPath();x.arc(-f.r*.35,-f.r*.35,f.r*.25,0,7);x.fill();
+x.fillStyle="#2ecc40";x.beginPath();x.ellipse(4,-f.r,9,4,-.5,0,7);x.fill()}
+x.restore()}
+let last=performance.now();
+function loop(n){const dt=Math.min((n-last)/16.67,3);last=n;x.clearRect(0,0,W,H);
+if(run){t+=dt;if(t>Math.max(25,70-sc)){t=0;const k=1+(Math.random()*Math.min(3,1+sc/10)|0);for(let i=0;i<k;i++)spawn()}
+fr.forEach(f=>{f.vy+=.25*dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.a+=f.va*dt});
+st.forEach(s=>{s.x+=s.vx*dt;s.y+=s.vy*dt;s.a+=.5*dt});
+for(const s of st)for(const f of fr)if(!f.dead&&!s.dead&&Math.hypot(s.x-f.x,s.y-f.y)<f.r+14){s.dead=f.dead=true;hit(f)}
+st=st.filter(s=>!s.dead&&s.x>-40&&s.x<W+40&&s.y>-40&&s.y<H+40);
+fr=fr.filter(f=>{if(f.dead)return false;if(f.y>H+f.r+5&&f.vy>0){if(!f.bomb&&run){li--;upd();if(li<=0)end()}return false}return true})}
+pt.forEach(p=>{p.vy+=.2*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.life-=dt;if(p.va)p.a+=p.va*dt});pt=pt.filter(p=>p.life>0);
+fr.forEach(drawFruit);
+pt.forEach(p=>{x.globalAlpha=Math.min(1,p.life/30);
+if(p.half!==undefined){x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.col[0];x.strokeStyle=p.col[1];x.lineWidth=3;
+x.beginPath();x.arc(0,0,p.r,p.half?0:Math.PI,p.half?Math.PI:6.283);x.closePath();x.fill();x.stroke();x.restore()}
+else{x.fillStyle=p.col;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}x.globalAlpha=1});
+st.forEach(drawStar);
+if(flash>0){x.fillStyle="rgba(255,0,0,"+flash/20+")";x.fillRect(0,0,W,H);flash-=dt}
+requestAnimationFrame(loop)}
+requestAnimationFrame(loop);upd();
+</script></body></html>
