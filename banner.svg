@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 380" width="900" height="380">
+<defs>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#3a0000"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<g id="star"><path d="M0-16L5-5L16 0L5 5L0 16L-5 5L-16 0L-5-5Z" fill="#ff1f1f"/><circle r="3" fill="#000"/></g>
+<g id="ic"><circle r="30" fill="#111" stroke="#ff1f1f" stroke-width="3"/></g>
+</defs>
+<style>
+.sway{animation:sway 5s ease-in-out infinite alternate}
+.sway2{animation:sway 7s ease-in-out infinite alternate-reverse}
+.spin{transform-box:fill-box;transform-origin:center;animation:spin 2s linear infinite}
+.box{transform-box:fill-box;transform-origin:center;animation:spin 6s linear infinite reverse}
+.name{animation:pulse 2.5s ease-in-out infinite}
+.scan{animation:scan 5s linear infinite}
+.f{animation:fl 2.4s ease-in-out infinite alternate}
+@keyframes sway{from{transform:translateX(-50px)}to{transform:translateX(50px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.75}}
+@keyframes scan{from{transform:translateY(-10px)}to{transform:translateY(390px)}}
+@keyframes fl{from{transform:translateY(8px)}to{transform:translateY(-8px)}}
+text{font-family:Segoe UI,Arial,sans-serif;text-anchor:middle}
+.i{font-size:19px;font-weight:900;fill:#ff1f1f}
+.l{font-size:14px;fill:#fff}
+</style>
+<rect width="900" height="380" fill="url(#bg)"/>
+<rect class="scan" width="900" height="3" fill="#ff1f1f" opacity=".25"/>
+<g stroke="#ff1f1f" opacity=".12"><path d="M0 95H900M0 190H900M0 285H900M225 0V380M450 0V380M675 0V380"/></g>
+
+<g transform="translate(70,45)"><g class="sway"><g class="spin"><use href="#star"/></g></g></g>
+<g transform="translate(830,170)"><g class="sway2"><g class="spin"><use href="#star"/></g></g></g>
+<g transform="translate(600,30)"><g class="sway2"><g class="spin"><use href="#star" transform="scale(.7)"/></g></g></g>
+<g transform="translate(110,185)"><g class="sway2"><rect class="box" width="22" height="22" fill="none" stroke="#ff1f1f" stroke-width="3"/></g></g>
+<g transform="translate(780,35)"><g class="sway"><rect class="box" width="18" height="18" fill="#ff1f1f"/></g></g>
+<g transform="translate(300,20)"><g class="sway"><rect class="box" width="12" height="12" fill="none" stroke="#fff" stroke-width="2"/></g></g>
+
+<text class="name" x="450" y="105" font-family="Arial Black,Segoe UI,sans-serif" font-size="66" font-weight="900" fill="#ff1f1f" filter="url(#glow)">VICTOR OSORIO</text>
+<text x="450" y="148" font-size="24" fill="#fff" letter-spacing="4">Student | Developer | Engineer</text>
+<text x="450" y="182" font-size="18" fill="#ff6b6b">Building projects | Programming | Tech</text>
+<path d="M150 215H750" stroke="#ff1f1f" stroke-width="2" opacity=".6"/>
+
+<g transform="translate(75,280)"><g class="f"><use href="#ic"/><text class="i" y="7">Py</text><text class="l" y="55">Python</text></g></g>
+<g transform="translate(225,280)"><g class="f" style="animation-delay:-.4s"><use href="#ic"/><text class="i" y="7">H5</text><text class="l" y="55">HTML</text></g></g>
+<g transform="translate(375,280)"><g class="f" style="animation-delay:-.8s"><use href="#ic"/><text class="i" y="7">C3</text><text class="l" y="55">CSS</text></g></g>
+<g transform="translate(525,280)"><g class="f" style="animation-delay:-1.2s"><use href="#ic"/><text class="i" y="7">Git</text><text class="l" y="55">GitHub</text></g></g>
+<g transform="translate(675,280)"><g class="f" style="animation-delay:-1.6s"><use href="#ic"/><text class="i" y="7">VS</text><text class="l" y="55">VS Code</text></g></g>
+<g transform="translate(825,280)"><g class="f" style="animation-delay:-2s"><use href="#ic"/><text class="i" y="7">XL</text><text class="l" y="55">Excel Expert</text></g></g>
+</svg>
