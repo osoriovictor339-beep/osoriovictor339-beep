@@ -34,7 +34,7 @@ I am a **technology student** who builds websites, programs in **Python**, and w
 
 <div align="center">
 
-[![Play Maze](https://img.shields.io/badge/PLAY_MAZE_NINJA-ff1f1f?style=for-the-badge&labelColor=000000)](https://osoriovictor339-beep.github.io/osoriovictor339-beep//juego.html)
+[![Play Maze](https://img.shields.io/badge/PLAY_MAZE_NINJA-ff1f1f?style=for-the-badge&labelColor=000000)](https://osoriovictor339-beep.github.io/osoriovictor339-beep//juego%20.html)
 
 </div>
 
